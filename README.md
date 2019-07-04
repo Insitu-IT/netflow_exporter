@@ -27,13 +27,13 @@ Usage of ./bin/netflow_exporter:
   -web.telemetry-path string
         Path under which to expose Prometheus metrics. (default "/metrics")
 ```
-##For example:
+## For example
 ```
 ./netflow_exporter -netflow.listen-address :2066 -netflow.sample-expiry 1h -web.listen-address :6666
 ```
 Visit http://localhost:6666/metrics
 
-##Usage docker
+## Usage docker
 ```
 $ git clone https://github.com/Insitu-IT/netflow_exporter
 $ cd netflow_exporter

@@ -37,7 +37,7 @@ Visit http://localhost:6666/metrics
 ```
 $ git clone https://github.com/Insitu-IT/netflow_exporter
 $ cd netflow_exporter
-$ edit Dockerfile - set needed parameters
+$ vi Dockerfile - set needed parameters
 $ docker build -t netflow_exporter .
 $ docker run --name=netflow_exporter -d -p9191:6666 -p2055:2066/udp netflow_exporter
 ```

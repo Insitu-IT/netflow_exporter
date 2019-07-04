@@ -10,11 +10,12 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
-    "strings"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/log"
 	"github.com/prometheus/common/version"
@@ -131,7 +132,7 @@ func (c *netflowCollector) processReader(udpSock *net.UDPConn) {
 					}
 					if (len(counts) > 0) && (len(labels) > 0) {
 						labels["From"] = srcAddress.IP.String()
-						labels["TemplateID"] = fmt.Sprintf("%d",record.TemplateID)
+						labels["TemplateID"] = fmt.Sprintf("%d", record.TemplateID)
 						labels["NetflowVersion"] = "9"
 
 						sample := &netflowSample{
@@ -208,14 +209,14 @@ func (c *netflowCollector) Collect(ch chan<- prometheus.Metric) {
 			continue
 		}
 		for key, value := range sample.Counts {
-            desc :=""
+			desc := ""
 			if sample.Labels["TemplateID"] != "" {
 				desc = fmt.Sprintf("netflow_%s_TemplateID%s_%s", sample.Labels["From"], sample.Labels["TemplateID"], key)
 			} else {
 				desc = fmt.Sprintf("netflow_%s_%s", sample.Labels["From"], key)
 			}
-            desc = strings.Replace(desc,".","",-1)
-            log.Infoln(desc)
+			desc = strings.Replace(desc, ".", "", -1)
+			log.Infoln(desc)
 			ch <- MustNewTimeConstMetric(
 				prometheus.NewDesc(desc,
 					fmt.Sprintf("netflow metric %s", key),
@@ -266,7 +267,7 @@ func main() {
 	log.Infoln("Starting netflow_exporter", version.Info())
 	log.Infoln("Build context", version.BuildContext())
 
-	http.Handle(*metricsPath, prometheus.Handler())
+	http.Handle(*metricsPath, promhttp.Handler())
 
 	c := newNetflowCollector()
 	prometheus.MustRegister(c)
